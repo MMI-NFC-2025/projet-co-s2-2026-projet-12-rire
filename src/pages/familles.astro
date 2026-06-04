@@ -1,0 +1,99 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+<Layout>
+	<Nav logoSrc="/Logo%20RRose.svg" titleSrc="/TitreHeaderRose.svg" />
+
+	<section class="bg-rire-rose">
+		<div class="max-w-7xl mx-auto px-6 py-20 md:py-32">
+			<p class="font-semibold text-xs md:text-sm tracking-[0.2em] uppercase text-rire-ink/70 mb-8">Pour les familles</p>
+			<h1 class="font-display font-extrabold text-5xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tight text-rire-ink mb-8 max-w-4xl">
+				Un proche isolé.<br/>
+				Et vous, à distance.
+			</h1>
+			<p class="text-lg md:text-2xl text-rire-ink/80 max-w-2xl mb-12 leading-relaxed">
+				Rirē vous permet de garder le lien grâce à des étudiants de confiance, présents quand vous ne pouvez pas l'être.
+			</p>
+			<a href="/app/inscription?type=famille" class="group inline-flex items-center gap-2 bg-rire-ink text-white font-bold px-8 py-5 rounded-full text-lg hover:bg-rire-blue transition-colors">
+				Créer un compte famille
+				<span class="group-hover:translate-x-1 transition-transform">→</span>
+			</a>
+		</div>
+	</section>
+
+	<section class="max-w-7xl mx-auto px-6 py-24 md:py-32">
+		<div class="mb-16">
+			<p class="font-semibold text-xs md:text-sm tracking-[0.2em] uppercase text-rire-blue mb-4">Types de missions</p>
+			<h2 class="font-display font-extrabold text-4xl md:text-6xl leading-[0.95] tracking-tight text-rire-ink max-w-3xl">
+				Tout ce qu'on peut<br/>déléguer en confiance.
+			</h2>
+		</div>
+		<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+			<div class="bg-rire-bg rounded-2xl p-8">
+				<img src="/CaddieIcon.svg" alt="Courses et livraisons" class="h-14 w-14 mb-6 object-contain" />
+				<h3 class="font-display font-bold text-xl text-rire-ink mb-2">Courses &amp; livraisons</h3>
+				<p class="text-rire-muted leading-relaxed">Faire les courses, récupérer un colis, aller à la pharmacie.</p>
+			</div>
+			<div class="bg-rire-bg rounded-2xl p-8">
+				<img src="/CaffeIcon.svg" alt="Présence et discussion" class="h-14 w-14 mb-6 object-contain" />
+				<h3 class="font-display font-bold text-xl text-rire-ink mb-2">Présence &amp; discussion</h3>
+				<p class="text-rire-muted leading-relaxed">Passer un moment, prendre un café, partager une activité simple.</p>
+			</div>
+			<div class="bg-rire-bg rounded-2xl p-8">
+				<img src="/ArbreIcon.svg" alt="Sorties et balades" class="h-14 w-14 mb-6 object-contain" />
+				<h3 class="font-display font-bold text-xl text-rire-ink mb-2">Sorties &amp; balades</h3>
+				<p class="text-rire-muted leading-relaxed">Aller au parc, faire un tour en ville, accompagner à un rendez-vous.</p>
+			</div>
+			<div class="bg-rire-bg rounded-2xl p-8">
+				<img src="/OrdiIcon.svg" alt="Accompagnement numérique" class="h-14 w-14 mb-6 object-contain" />
+				<h3 class="font-display font-bold text-xl text-rire-ink mb-2">Accompagnement numérique</h3>
+				<p class="text-rire-muted leading-relaxed">Aider avec le téléphone, l'ordinateur, les démarches en ligne.</p>
+			</div>
+		</div>
+	</section>
+
+	<section class="bg-rire-bg border-y border-gray-100">
+		<div class="max-w-7xl mx-auto px-6 py-24 md:py-32">
+			<div class="mb-16">
+				<p class="font-semibold text-xs md:text-sm tracking-[0.2em] uppercase text-rire-blue mb-4">Comment ça marche</p>
+				<h2 class="font-display font-extrabold text-4xl md:text-6xl leading-[0.95] tracking-tight text-rire-ink max-w-3xl">
+					Simple. Sécurisé.<br/>En quelques minutes.
+				</h2>
+			</div>
+			<div class="grid md:grid-cols-3 gap-8 md:gap-12">
+				<div class="border-t-2 border-rire-ink pt-8">
+					<div class="font-display font-extrabold text-7xl md:text-8xl text-rire-ink leading-none mb-6">01</div>
+					<h3 class="font-display font-bold text-2xl text-rire-ink mb-3">Décrivez le besoin</h3>
+					<p class="text-rire-muted leading-relaxed">Type de mission, jour, durée, lieu, tarif. Vous gardez la main sur tout.</p>
+				</div>
+				<div class="border-t-2 border-rire-ink pt-8">
+					<div class="font-display font-extrabold text-7xl md:text-8xl text-rire-ink leading-none mb-6">02</div>
+					<h3 class="font-display font-bold text-2xl text-rire-ink mb-3">Recevez les candidatures</h3>
+					<p class="text-rire-muted leading-relaxed">Des étudiants vérifiés vous proposent leur aide avec un mot de motivation.</p>
+				</div>
+				<div class="border-t-2 border-rire-ink pt-8">
+					<div class="font-display font-extrabold text-7xl md:text-8xl text-rire-ink leading-none mb-6">03</div>
+					<h3 class="font-display font-bold text-2xl text-rire-ink mb-3">Suivez en direct</h3>
+					<p class="text-rire-muted leading-relaxed">Notifications de check-in et check-out, paiement libéré à la fin.</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="bg-rire-blue text-white">
+		<div class="max-w-7xl mx-auto px-6 py-24 md:py-32">
+			<p class="font-semibold text-xs md:text-sm tracking-[0.2em] uppercase text-white/70 mb-6">On commence ?</p>
+			<h2 class="font-display font-extrabold text-5xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tight mb-12 max-w-4xl">
+				Votre proche<br/>n'attendra plus.
+			</h2>
+			<a href="/app/inscription?type=famille" class="group inline-flex items-center gap-2 bg-rire-rose text-rire-ink font-bold px-8 py-5 rounded-full text-lg hover:scale-[1.02] transition-transform">
+				Créer un compte famille
+				<span class="group-hover:translate-x-1 transition-transform">→</span>
+			</a>
+		</div>
+	</section>
+
+	<Footer logoSrc="/Logo%20RRose.svg" />
+</Layout>

@@ -1,0 +1,100 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+<Layout>
+	<Nav logoSrc="/Logo%20RJaune.svg" titleSrc="/TitreHeaderJaune.svg" />
+
+	<section class="bg-rire-orange">
+		<div class="max-w-7xl mx-auto px-6 py-20 md:py-32">
+			<p class="font-semibold text-xs md:text-sm tracking-[0.2em] uppercase text-rire-ink/70 mb-8">Pour les étudiants</p>
+			<h1 class="font-display font-extrabold text-5xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tight text-rire-ink mb-8 max-w-4xl">
+				Un job.<br/>
+				Près de chez toi.<br/>
+				Qui a du sens.
+			</h1>
+			<p class="text-lg md:text-2xl text-rire-ink/80 max-w-2xl mb-12 leading-relaxed">
+				Donne quelques heures par semaine à un aîné isolé. Tu es payé, tu valorises ton CV, tu fais du bien.
+			</p>
+			<a href="/app/inscription?type=etudiant" class="group inline-flex items-center gap-2 bg-rire-ink text-white font-bold px-8 py-5 rounded-full text-lg hover:bg-rire-blue transition-colors">
+				Créer un compte étudiant
+				<span class="group-hover:translate-x-1 transition-transform">→</span>
+			</a>
+		</div>
+	</section>
+
+	<section class="max-w-7xl mx-auto px-6 py-24 md:py-32">
+		<div class="mb-16">
+			<p class="font-semibold text-xs md:text-sm tracking-[0.2em] uppercase text-rire-blue mb-4">Ce que tu gagnes</p>
+			<h2 class="font-display font-extrabold text-4xl md:text-6xl leading-[0.95] tracking-tight text-rire-ink max-w-3xl">
+				Beaucoup plus<br/>qu'un job d'appoint.
+			</h2>
+		</div>
+		<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+			<div class="bg-rire-bg rounded-2xl p-8">
+				<img src="/ArgentIcon.svg" alt="Meilleur payé qu'un petit boulot" class="h-14 w-14 mb-6 object-contain" />
+				<h3 class="font-display font-bold text-xl text-rire-ink mb-2">Mieux payé qu'un petit boulot</h3>
+				<p class="text-rire-muted leading-relaxed">À partir de 15 €/h, sans frais ni cotisations à avancer.</p>
+			</div>
+			<div class="bg-rire-bg rounded-2xl p-8">
+				<img src="/CalendrierIcon.svg" alt="Flexible à 100 %" class="h-14 w-14 mb-6 object-contain" />
+				<h3 class="font-display font-bold text-xl text-rire-ink mb-2">Flexible à 100 %</h3>
+				<p class="text-rire-muted leading-relaxed">Tu choisis tes missions, tes horaires, ton secteur. Aucun engagement.</p>
+			</div>
+			<div class="bg-rire-bg rounded-2xl p-8">
+				<img src="/CVIcon.svg" alt="Valorisable sur ton CV" class="h-14 w-14 mb-6 object-contain" />
+				<h3 class="font-display font-bold text-xl text-rire-ink mb-2">Valorisable sur ton CV</h3>
+				<p class="text-rire-muted leading-relaxed">Une vraie expérience humaine, qui parle aux recruteurs de tous secteurs.</p>
+			</div>
+			<div class="bg-rire-bg rounded-2xl p-8">
+				<img src="/CoeurIcon.svg" alt="Du sens, vraiment" class="h-14 w-14 mb-6 object-contain" />
+				<h3 class="font-display font-bold text-xl text-rire-ink mb-2">Du sens, vraiment</h3>
+				<p class="text-rire-muted leading-relaxed">Un sourire d'aîné isolé. Un moment partagé. Ça vaut tous les jobs d'été.</p>
+			</div>
+		</div>
+	</section>
+
+	<section class="bg-rire-bg border-y border-gray-100">
+		<div class="max-w-7xl mx-auto px-6 py-24 md:py-32">
+			<div class="mb-16">
+				<p class="font-semibold text-xs md:text-sm tracking-[0.2em] uppercase text-rire-blue mb-4">Comment ça marche</p>
+				<h2 class="font-display font-extrabold text-4xl md:text-6xl leading-[0.95] tracking-tight text-rire-ink max-w-3xl">
+					De l'inscription<br/>au premier sourire.
+				</h2>
+			</div>
+			<div class="grid md:grid-cols-3 gap-8 md:gap-12">
+				<div class="border-t-2 border-rire-ink pt-8">
+					<div class="font-display font-extrabold text-7xl md:text-8xl text-rire-ink leading-none mb-6">01</div>
+					<h3 class="font-display font-bold text-2xl text-rire-ink mb-3">Crée ton profil</h3>
+					<p class="text-rire-muted leading-relaxed">Carte d'étudiant, identité, motivation. Validation manuelle sous 48 h.</p>
+				</div>
+				<div class="border-t-2 border-rire-ink pt-8">
+					<div class="font-display font-extrabold text-7xl md:text-8xl text-rire-ink leading-none mb-6">02</div>
+					<h3 class="font-display font-bold text-2xl text-rire-ink mb-3">Candidate aux missions</h3>
+					<p class="text-rire-muted leading-relaxed">Parcours les missions disponibles près de chez toi, candidate à celles qui te parlent.</p>
+				</div>
+				<div class="border-t-2 border-rire-ink pt-8">
+					<div class="font-display font-extrabold text-7xl md:text-8xl text-rire-ink leading-none mb-6">03</div>
+					<h3 class="font-display font-bold text-2xl text-rire-ink mb-3">Fais la mission, sois payé</h3>
+					<p class="text-rire-muted leading-relaxed">Check-in à l'arrivée, check-out à la fin, paiement reçu sous 48 h.</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="bg-rire-blue text-white">
+		<div class="max-w-7xl mx-auto px-6 py-24 md:py-32">
+			<p class="font-semibold text-xs md:text-sm tracking-[0.2em] uppercase text-white/70 mb-6">On y va ?</p>
+			<h2 class="font-display font-extrabold text-5xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tight mb-12 max-w-4xl">
+				Une heure peut<br/>changer une journée.
+			</h2>
+			<a href="/app/inscription?type=etudiant" class="group inline-flex items-center gap-2 bg-rire-orange text-rire-ink font-bold px-8 py-5 rounded-full text-lg hover:scale-[1.02] transition-transform">
+				Créer un compte étudiant
+				<span class="group-hover:translate-x-1 transition-transform">→</span>
+			</a>
+		</div>
+	</section>
+
+	<Footer logoSrc="/Logo%20RJaune.svg" />
+</Layout>

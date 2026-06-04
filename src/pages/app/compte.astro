@@ -1,0 +1,28 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Mon compte — Rirē">
+  <main class="min-h-[60vh] flex items-center justify-center">
+    <p class="text-rire-muted">Redirection en cours...</p>
+  </main>
+</Layout>
+
+<script>
+  import { isAuthValid, currentUser } from '../../lib/backend.mjs';
+
+  if (!isAuthValid()) {
+    window.location.href = '/app/connexion';
+  } else {
+    const user = currentUser();
+    if (!user) {
+      window.location.href = '/app/connexion';
+    } else if (user.type === 'famille') {
+      window.location.href = '/app/compte/famille';
+    } else if (user.type === 'etudiant') {
+      window.location.href = '/app/compte/etudiant';
+    } else {
+      window.location.href = '/app/connexion';
+    }
+  }
+</script>

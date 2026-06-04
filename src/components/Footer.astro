@@ -1,0 +1,50 @@
+
+---
+const {
+	logoSrc = '/Logo%20RBLeu.svg',
+} = Astro.props;
+---
+
+<footer class="bg-rire-ink text-white">
+	<div class="max-w-7xl mx-auto px-6 py-16 md:py-20">
+		<div class="grid md:grid-cols-4 gap-12 mb-16">
+			<div class="md:col-span-1">
+				<a href="/" class="inline-flex items-center gap-3 font-display text-3xl font-extrabold tracking-tight">
+					<img src={logoSrc} alt="" aria-hidden="true" class="h-8 w-8" />
+					<span>Rirē</span>
+				</a>
+				<p class="text-white/60 mt-4 max-w-xs leading-relaxed">Plateforme intergénérationnelle d'entraide entre étudiants et seniors.</p>
+			</div>
+			<div>
+				<h4 class="font-display font-bold text-sm uppercase tracking-wider mb-5">Produit</h4>
+				<ul class="space-y-3 text-white/70">
+					<li><a href="/familles" class="hover:text-white transition-colors">Pour les familles</a></li>
+					<li><a href="/etudiants" class="hover:text-white transition-colors">Pour les étudiants</a></li>
+					<li><a href="/#comment-ca-marche" class="hover:text-white transition-colors">Comment ça marche</a></li>
+					<li><a href="/#faq" class="hover:text-white transition-colors">FAQ</a></li>
+				</ul>
+			</div>
+			<div>
+				<h4 class="font-display font-bold text-sm uppercase tracking-wider mb-5">Plateforme</h4>
+				<ul class="space-y-3 text-white/70">
+					<li><a href="/app/connexion" class="hover:text-white transition-colors">Se connecter</a></li>
+					<li><a href="/app/inscription" class="hover:text-white transition-colors">S'inscrire</a></li>
+					<li><a href="/aide" class="hover:text-white transition-colors">Centre d'aide</a></li>
+					<li><a href="/contact" class="hover:text-white transition-colors">Nous contacter</a></li>
+				</ul>
+			</div>
+			<div>
+				<h4 class="font-display font-bold text-sm uppercase tracking-wider mb-5">Légal</h4>
+				<ul class="space-y-3 text-white/70">
+					<li><a href="/mentions-legales" class="...">Mentions légales</a></li>
+					<li><a href="/cgu" class="...">CGU</a></li>
+					<li><a href="/confidentialite" class="...">Confidentialité</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+			<p class="text-white/50 text-sm">© 2026 Rirē. Tous droits réservés.</p>
+			<p class="text-white/50 text-sm">Le lien avant tout.</p>
+		</div>
+	</div>
+</footer>

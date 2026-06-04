@@ -1,0 +1,79 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/NavApp.astro';
+import Footer from '../../components/Footer.astro';
+---
+<Layout title="Missions disponibles — Rirē">
+	<Nav />
+	<main class="max-w-5xl mx-auto px-6 py-12">
+		<div class="mb-8">
+			<div class="text-xs font-semibold tracking-widest text-rire-blue uppercase mb-2">Toutes les missions</div>
+			<h1 class="font-display text-4xl font-bold text-rire-ink mb-2">Missions disponibles</h1>
+			<p class="text-rire-muted">Filtre les missions selon tes critères.</p>
+		</div>
+
+		<div class="bg-white border border-gray-200 rounded-2xl p-6 mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+			<div>
+				<label class="block text-xs font-medium text-rire-muted mb-1">Ville</label>
+				<input type="text" id="f-ville" placeholder="Ex : Lyon" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+			</div>
+			<div>
+				<label class="block text-xs font-medium text-rire-muted mb-1">Type</label>
+				<select id="f-type" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white">
+					<option value="">Tous</option>
+					<option value="courses">Courses</option>
+					<option value="presence">Présence / compagnie</option>
+					<option value="sortie">Sortie</option>
+					<option value="numerique">Aide numérique</option>
+					<option value="autre">Autre</option>
+				</select>
+			</div>
+			<div>
+				<label class="block text-xs font-medium text-rire-muted mb-1">Tarif min (€/h)</label>
+				<input type="number" id="f-tarif" min="10" placeholder="Ex : 15" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+			</div>
+		</div>
+
+		<div id="loading" class="text-center py-12 text-rire-muted">Chargement...</div>
+		<div id="missions-list" class="space-y-4"></div>
+	</main>
+	<Footer />
+</Layout>
+<script>
+	import { missionsFiltrees } from '../../lib/backend.mjs';
+	const listEl = document.getElementById('missions-list');
+	const loadingEl = document.getElementById('loading');
+
+	async function loadList() {
+		loadingEl.classList.remove('hidden');
+		listEl.innerHTML = '';
+		const ville = document.getElementById('f-ville').value.trim();
+		const type = document.getElementById('f-type').value;
+		const tarifMin = document.getElementById('f-tarif').value;
+		try {
+			const missions = await missionsFiltrees({ ville: ville || null, type: type || null, tarifMin: tarifMin ? parseFloat(tarifMin) : null });
+			loadingEl.classList.add('hidden');
+			if (missions.length === 0) {
+				listEl.innerHTML = '<p class="text-rire-muted text-center py-8">Aucune mission ne correspond à tes filtres.</p>';
+			} else {
+				listEl.innerHTML = missions.map(m => {
+					const f = m.expand?.famille;
+					return `<a href="/app/mission?id=${m.id}" class="block bg-white border border-gray-200 rounded-lg p-6 hover:border-rire-blue transition">
+						<div class="flex items-start justify-between mb-2">
+							<h3 class="font-display font-semibold text-rire-ink text-lg">${m.titre}</h3>
+							<span class="text-sm font-semibold text-rire-blue ml-4 whitespace-nowrap">${m.tarifHoraire}€/h</span>
+						</div>
+						<p class="text-sm text-rire-muted">📍 ${m.lieuVille} · ⏱️ ${m.dureeEstimee}h · 📅 ${new Date(m.dateSouhaitee).toLocaleDateString('fr-FR')}</p>
+						${f ? `<p class="text-xs text-rire-muted mt-1">Publié par ${f.prenom}</p>` : ''}
+					</a>`;
+				}).join('');
+			}
+		} catch (err) { console.error(err); loadingEl.classList.add('hidden'); }
+	}
+
+	loadList();
+	['f-ville', 'f-type', 'f-tarif'].forEach(id => {
+		document.getElementById(id).addEventListener('input', loadList);
+		document.getElementById(id).addEventListener('change', loadList);
+	});
+</script>

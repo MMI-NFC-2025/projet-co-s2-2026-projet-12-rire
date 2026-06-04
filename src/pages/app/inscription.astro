@@ -1,0 +1,130 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/NavApp.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<Layout title="Inscription — Rirē">
+  <Nav />
+  <main class="min-h-[70vh] flex items-center justify-center px-6 py-16 bg-rire-bg">
+    <div class="w-full max-w-lg bg-white rounded-2xl p-10 shadow-sm border border-gray-200">
+      <h1 class="font-display text-3xl font-bold text-rire-ink mb-2">Inscription</h1>
+      <p class="text-rire-muted mb-6">Rejoins Rirē en 1 minute.</p>
+
+      <div class="grid grid-cols-2 gap-3 mb-6">
+        <button type="button" data-type="famille"
+          class="type-btn px-4 py-3 rounded-lg border-2 border-rire-rose bg-rose-50 font-medium text-rire-ink text-sm">
+          👨‍👩‍👧 Je suis une famille
+        </button>
+        <button type="button" data-type="etudiant"
+          class="type-btn px-4 py-3 rounded-lg border-2 border-gray-200 font-medium text-rire-ink text-sm">
+          🎓 Je suis étudiant
+        </button>
+      </div>
+
+      <form id="form-inscription" class="space-y-3">
+        <div class="grid grid-cols-2 gap-3">
+          <input type="text" id="prenom" placeholder="Prénom" required
+            class="px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-rire-blue" />
+          <input type="text" id="nom" placeholder="Nom" required
+            class="px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-rire-blue" />
+        </div>
+        <input type="email" id="email" placeholder="Email" required
+          class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-rire-blue" />
+        <input type="tel" id="telephone" placeholder="Téléphone"
+          class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-rire-blue" />
+        <input type="text" id="ville" placeholder="Ville" required
+          class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-rire-blue" />
+        <input type="password" id="password" placeholder="Mot de passe (8 caractères min.)" minlength="8" required
+          class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-rire-blue" />
+        <input type="password" id="passwordConfirm" placeholder="Confirmer le mot de passe" minlength="8" required
+          class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-rire-blue" />
+
+        <div id="champs-etudiant" class="hidden space-y-3 pt-2 border-t border-gray-100">
+          <input type="text" id="ecole" placeholder="École / Université"
+            class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-rire-blue" />
+          <input type="text" id="niveauEtudes" placeholder="Niveau (L1, M2…)"
+            class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-rire-blue" />
+        </div>
+
+        <div id="erreur" class="hidden text-red-600 text-sm p-3 bg-red-50 rounded-lg"></div>
+
+        <button type="submit"
+          class="w-full bg-rire-blue text-white py-3 rounded-lg font-semibold hover:opacity-90 transition mt-4">
+          Créer mon compte
+        </button>
+      </form>
+
+      <p class="text-center text-rire-muted text-sm mt-6">
+        Déjà un compte ?
+        <a href="/app/connexion" class="text-rire-blue font-semibold">Connecte-toi</a>
+      </p>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  import { signup, login, isAuthValid } from '../../lib/backend.mjs';
+
+  if (isAuthValid()) {
+    window.location.href = '/app/compte';
+  }
+
+  let currentType: string = 'famille';
+
+  document.querySelectorAll('.type-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentType = (btn as HTMLElement).dataset.type ?? 'famille';
+      document.querySelectorAll('.type-btn').forEach(b => {
+        b.classList.remove('border-rire-rose', 'bg-rose-50', 'border-rire-orange', 'bg-orange-50');
+        b.classList.add('border-gray-200');
+      });
+      btn.classList.remove('border-gray-200');
+      if (currentType === 'famille') {
+        btn.classList.add('border-rire-rose', 'bg-rose-50');
+        document.getElementById('champs-etudiant')?.classList.add('hidden');
+      } else {
+        btn.classList.add('border-rire-orange', 'bg-orange-50');
+        document.getElementById('champs-etudiant')?.classList.remove('hidden');
+      }
+    });
+  });
+
+  document.getElementById('form-inscription')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const erreur = document.getElementById('erreur') as HTMLElement | null;
+    if (erreur) erreur.classList.add('hidden');
+
+    const get = (id: string) => (document.getElementById(id) as HTMLInputElement).value;
+
+    const data: any = {
+      email: get('email'),
+      password: get('password'),
+      passwordConfirm: get('passwordConfirm'),
+      type: currentType,
+      prenom: get('prenom'),
+      nom: get('nom'),
+      telephone: get('telephone'),
+      ville: get('ville'),
+      verifie: false,
+    };
+
+    if (currentType === 'etudiant') {
+      data.ecole = get('ecole');
+      data.niveauEtudes = get('niveauEtudes');
+    }
+
+    try {
+      await signup(data);
+      await login(data.email, data.password);
+      window.location.href = '/app/compte';
+    } catch (err: any) {
+      const msg = err?.response?.data?.email?.message || err?.message || 'inscription échouée.';
+      if (erreur) {
+        erreur.textContent = 'Erreur : ' + msg;
+        erreur.classList.remove('hidden');
+      }
+    }
+  });
+</script>

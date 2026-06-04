@@ -1,0 +1,94 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Nav from '../../../components/NavApp.astro';
+import Footer from '../../../components/Footer.astro';
+---
+
+<Layout title="Mon compte — Rirē">
+  <Nav />
+  <main class="max-w-5xl mx-auto px-6 py-12">
+    <div id="loading" class="text-center py-12 text-rire-muted">Chargement...</div>
+
+    <div id="content" class="hidden">
+      <div class="flex items-center justify-between mb-2">
+        <div class="text-xs font-semibold tracking-widest text-rire-rose uppercase">Espace famille</div>
+        <a href="/app/compte/profil" class="text-sm text-rire-muted hover:text-rire-ink mr-4">Mon profil</a>
+        <button id="btn-logout" class="text-sm text-rire-muted hover:text-rire-ink">Se déconnecter</button>
+      </div>
+      <h1 class="font-display text-4xl font-bold text-rire-ink mb-2">
+        Bonjour <span id="user-prenom"></span>
+      </h1>
+      <p class="text-rire-muted mb-10">Voici l'état de tes missions.</p>
+
+      <div class="mb-10">
+        <a href="/app/compte/famille/nouvelle-mission"
+          class="inline-block bg-rire-rose text-rire-ink px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition">
+          + Publier une nouvelle mission
+        </a>
+      </div>
+
+      <h2 class="font-display text-2xl font-semibold text-rire-ink mb-4">Tes missions</h2>
+      <div id="missions-list" class="space-y-4"></div>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  import { isAuthValid, currentUser, logout, missionsByFamille } from '../../../lib/backend.mjs';
+
+  if (!isAuthValid()) {
+    window.location.href = '/app/connexion';
+  } else {
+    const user = currentUser();
+    if (!user || user.type !== 'famille') {
+      window.location.href = '/app/compte/etudiant';
+    } else {
+      const userPrenomEl = document.getElementById('user-prenom');
+      if (userPrenomEl) userPrenomEl.textContent = user.prenom;
+
+      try {
+        const missions = await missionsByFamille(user.id);
+        const listEl = document.getElementById('missions-list');
+
+        if (listEl) {
+          if (missions.length === 0) {
+            listEl.innerHTML = `
+            <div class="bg-rire-bg rounded-lg p-8 text-center">
+              <p class="text-rire-muted">Tu n'as pas encore publié de mission.</p>
+            </div>`;
+          } else {
+            const colors: Record<string, string> = {
+              ouverte: 'bg-blue-50 text-rire-blue',
+              attribuee: 'bg-pink-50 text-pink-700',
+              en_cours: 'bg-orange-50 text-orange-700',
+              terminee: 'bg-green-50 text-green-700',
+              annulee: 'bg-gray-100 text-gray-600'
+            };
+            listEl.innerHTML = missions.map(m => `
+            <a href="/app/mission?id=${m.id}" class="block bg-white border border-gray-200 rounded-lg p-6 hover:border-rire-blue transition">
+              <div class="flex items-start justify-between mb-2">
+                <h3 class="font-display font-semibold text-rire-ink text-lg">${m.titre}</h3>
+                <span class="text-xs px-3 py-1 rounded-full ${colors[(m.statut as string)] || 'bg-gray-100'} whitespace-nowrap ml-4">
+                  ${String(m.statut).replace('_', ' ')}
+                </span>
+              </div>
+              <p class="text-sm text-rire-muted">
+                📍 ${m.lieuVille} · ⏱️ ${m.dureeEstimee}h · 💶 ${m.tarifHoraire}€/h
+              </p>
+            </a>
+          `).join('');
+          }
+        }
+      } catch (err) { console.error(err); }
+
+      document.getElementById('loading')?.classList.add('hidden');
+      document.getElementById('content')?.classList.remove('hidden');
+    }
+  }
+
+  document.getElementById('btn-logout')?.addEventListener('click', () => {
+    logout();
+    window.location.href = '/';
+  });
+</script>

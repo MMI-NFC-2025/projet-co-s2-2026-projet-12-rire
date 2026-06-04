@@ -1,0 +1,376 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/NavApp.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<Layout title="Mission — Rirē">
+  <Nav />
+  <main class="max-w-3xl mx-auto px-6 py-12">
+    <div id="loading" class="text-center py-12 text-rire-muted">Chargement...</div>
+    <div id="not-found" class="hidden text-center py-12">
+      <h1 class="font-display text-2xl text-rire-ink mb-2">Mission introuvable</h1>
+      <a href="/" class="text-rire-blue">Retour à l'accueil</a>
+    </div>
+
+    <div id="content" class="hidden">
+      <div class="mb-8">
+        <a href="javascript:history.back()" class="text-sm text-rire-muted hover:text-rire-ink mb-4 inline-block">← Retour</a>
+        <div class="mb-3">
+          <span id="statut-badge" class="text-xs px-3 py-1 rounded-full"></span>
+        </div>
+        <h1 id="mission-titre" class="font-display text-4xl font-bold text-rire-ink mb-3"></h1>
+        <div id="mission-meta" class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-rire-muted"></div>
+      </div>
+
+      <div class="bg-white border border-gray-200 rounded-2xl p-8 mb-6">
+        <h2 class="font-display font-semibold text-rire-ink mb-3">Description</h2>
+        <div id="mission-description" class="text-rire-ink whitespace-pre-wrap mb-6"></div>
+
+        <h2 class="font-display font-semibold text-rire-ink mb-3">Adresse</h2>
+        <p id="mission-adresse" class="text-rire-ink"></p>
+
+        <div id="mission-notes-bloc" class="hidden mt-6">
+          <h2 class="font-display font-semibold text-rire-ink mb-3">Notes de la famille</h2>
+          <p id="mission-notes" class="text-rire-ink"></p>
+        </div>
+      </div>
+
+      <div id="action-zone" class="bg-rire-bg rounded-2xl p-8"></div>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+import {
+	isAuthValid, currentUser, oneUser, oneMission,
+	newCandidature, candidaturesByMission, candidaturesByEtudiant,
+	acceptCandidature, refuseCandidature,
+	checkinMission, checkoutVisite, visitesByMission,
+	changeMissionStatut, newAvis, avisExistant,
+	updateUser, newSignalement
+} from '../../lib/backend.mjs';
+
+const params = new URLSearchParams(window.location.search);
+const missionId = params.get('id');
+
+if (!missionId) {
+	document.getElementById('loading').classList.add('hidden');
+	document.getElementById('not-found').classList.remove('hidden');
+} else {
+	loadMission();
+}
+
+async function loadMission() {
+	try {
+		const mission = await oneMission(missionId);
+		const user = isAuthValid() ? currentUser() : null;
+
+		document.getElementById('mission-titre').textContent = mission.titre;
+		document.getElementById('mission-description').textContent = (mission.description || '').replace(/<[^>]*>/g, '');
+		document.getElementById('mission-adresse').textContent = `${mission.lieuAdresse}, ${mission.lieuVille}`;
+
+		document.getElementById('mission-meta').innerHTML = `
+			<span>📍 ${mission.lieuVille}</span>
+			<span>⏱️ ${mission.dureeEstimee}h</span>
+			<span>💶 ${mission.tarifHoraire}€/h</span>
+			<span>📅 ${new Date(mission.dateSouhaitee).toLocaleDateString('fr-FR')}</span>
+		`;
+
+		const colors = {
+			ouverte: 'bg-blue-50 text-rire-blue',
+			attribuee: 'bg-pink-50 text-pink-700',
+			en_cours: 'bg-orange-50 text-orange-700',
+			terminee: 'bg-green-50 text-green-700',
+			annulee: 'bg-gray-100 text-gray-600'
+		};
+		const badge = document.getElementById('statut-badge');
+		badge.className = `text-xs px-3 py-1 rounded-full ${colors[mission.statut] || 'bg-gray-100'}`;
+		badge.textContent = mission.statut.replace('_', ' ');
+
+		if (mission.notesFamille) {
+			document.getElementById('mission-notes-bloc').classList.remove('hidden');
+			document.getElementById('mission-notes').textContent = mission.notesFamille.replace(/<[^>]*>/g, '');
+		}
+
+		document.getElementById('loading').classList.add('hidden');
+		document.getElementById('content').classList.remove('hidden');
+
+		await renderActionZone(mission, user);
+	} catch (err) {
+		console.error(err);
+		document.getElementById('loading').classList.add('hidden');
+		document.getElementById('not-found').classList.remove('hidden');
+	}
+}
+
+async function renderActionZone(mission, user) {
+	const zone = document.getElementById('action-zone');
+
+	// CAS A : MISSION ANNULÉE
+	if (mission.statut === 'annulee') {
+		zone.innerHTML = `
+			<div class="text-center py-10">
+				<div class="text-5xl mb-3">🚫</div>
+				<h3 class="font-display text-2xl font-bold text-rire-ink mb-2">Mission annulée</h3>
+				<p class="text-rire-muted">Cette mission a été annulée par la famille et n'est plus disponible.</p>
+			</div>`;
+		return;
+	}
+
+	// CAS B : PAS CONNECTÉ
+	if (!user) {
+		zone.innerHTML = `
+			<h3 class="font-display font-semibold text-rire-ink mb-2">Intéressé par cette mission ?</h3>
+			<p class="text-rire-muted text-sm mb-4">Connecte-toi pour postuler.</p>
+			<a href="/app/connexion" class="inline-block bg-rire-blue text-white px-6 py-3 rounded-lg font-semibold">Se connecter</a>`;
+		return;
+	}
+
+	// CAS C : MISSION TERMINÉE
+	if (mission.statut === 'terminee') {
+		const visites = await visitesByMission(missionId);
+		const visite = visites.find(v => v.statut === 'terminee');
+		let duree = mission.dureeEstimee;
+		if (visite && visite.checkinAt && visite.checkoutAt) {
+			duree = ((new Date(visite.checkoutAt) - new Date(visite.checkinAt)) / 3600000).toFixed(1);
+		}
+		const total = (duree * mission.tarifHoraire).toFixed(2);
+		const isFamilleOwner = user.type === 'famille' && mission.famille === user.id;
+		const isEtudiantChosen = user.type === 'etudiant' && mission.etudiantChoisi === user.id;
+
+		let html = `
+			<h3 class="font-display font-semibold text-rire-ink mb-4 flex items-center gap-2"><span>✓</span> Mission terminée</h3>
+			<div class="bg-white border border-gray-200 rounded-lg p-5 mb-4">
+				<h4 class="font-semibold text-rire-ink mb-2">Récapitulatif</h4>
+				<p class="text-sm text-rire-muted">${duree}h × ${mission.tarifHoraire}€/h</p>
+				<p class="text-3xl font-bold text-rire-blue mt-1">${total} €</p>
+				<p class="text-xs text-rire-muted mt-3 italic">Le paiement s'effectue directement entre la famille et l'étudiant. Rirē n'intervient pas dans la transaction.</p>
+			</div>`;
+
+		if (isEtudiantChosen) {
+			const fullUser = await oneUser(user.id);
+			html += `
+				<div class="bg-white border border-gray-200 rounded-lg p-5 mb-4">
+					<h4 class="font-semibold text-rire-ink mb-2">Tes coordonnées de paiement</h4>
+					<p class="text-sm text-rire-muted mb-3">Renseigne IBAN, PayPal, Lydia… pour que la famille puisse te payer.</p>
+					<textarea id="coord-paiement" rows="3" placeholder="Ex : IBAN FR76... / PayPal: monemail@... / Lydia: 0612..." class="w-full px-4 py-3 border border-gray-200 rounded-lg mb-3">${fullUser.coordonneesPaiement || ''}</textarea>
+					<button id="btn-save-coord" class="bg-rire-blue text-white px-4 py-2 rounded-lg text-sm font-medium">${fullUser.coordonneesPaiement ? 'Mettre à jour' : 'Enregistrer'}</button>
+					<span id="coord-success" class="hidden text-sm text-green-700 ml-3">✓ Enregistré</span>
+				</div>`;
+		}
+
+		if (isFamilleOwner && mission.etudiantChoisi) {
+			const etu = await oneUser(mission.etudiantChoisi);
+			html += `
+				<div class="bg-white border border-gray-200 rounded-lg p-5 mb-4">
+					<h4 class="font-semibold text-rire-ink mb-2">Coordonnées de paiement de ${etu.prenom}</h4>
+					${etu.coordonneesPaiement
+						? `<p class="text-sm text-rire-ink whitespace-pre-line">${etu.coordonneesPaiement.replace(/<[^>]*>/g, '')}</p>`
+						: `<p class="text-sm text-rire-muted italic">L'étudiant n'a pas encore renseigné ses coordonnées.</p>`}
+				</div>`;
+		}
+
+		const peutNoter = isFamilleOwner || isEtudiantChosen;
+		if (peutNoter) {
+			const dejaAvis = await avisExistant(missionId, user.id);
+			if (dejaAvis) {
+				html += `
+					<div class="bg-white border border-gray-200 rounded-lg p-5 mb-4">
+						<h4 class="font-semibold text-rire-ink mb-2">Ton avis</h4>
+						<div class="text-rire-orange mb-2">${'★'.repeat(dejaAvis.note)}${'☆'.repeat(5 - dejaAvis.note)}</div>
+						<p class="text-sm text-rire-ink italic">"${(dejaAvis.commentaire || '').replace(/<[^>]*>/g, '')}"</p>
+					</div>`;
+			} else {
+				html += `
+					<div class="bg-white border border-gray-200 rounded-lg p-5 mb-4">
+						<h4 class="font-semibold text-rire-ink mb-2">Laisse un avis</h4>
+						<div class="flex gap-1 mb-3" id="rating">
+							${[1,2,3,4,5].map(n => `<button type="button" data-note="${n}" class="star-btn text-3xl text-gray-300 hover:text-rire-orange">★</button>`).join('')}
+						</div>
+						<textarea id="avis-commentaire" rows="3" placeholder="Ton retour (optionnel)..." class="w-full px-4 py-3 border border-gray-200 rounded-lg mb-3"></textarea>
+						<button id="btn-avis" class="bg-rire-blue text-white px-4 py-2 rounded-lg text-sm font-medium" disabled>Publier mon avis</button>
+					</div>`;
+			}
+		}
+
+		let cibleSignal = null;
+		if (isFamilleOwner && mission.etudiantChoisi) cibleSignal = mission.etudiantChoisi;
+		if (isEtudiantChosen) cibleSignal = mission.famille;
+		if (cibleSignal) {
+			html += `<div class="text-center mt-4"><button id="btn-signaler" class="text-sm text-rire-muted underline hover:text-red-600">Signaler un problème</button></div>`;
+		}
+
+		zone.innerHTML = html;
+
+		document.getElementById('btn-save-coord')?.addEventListener('click', async () => {
+			const val = document.getElementById('coord-paiement').value;
+			try {
+				await updateUser(user.id, { coordonneesPaiement: val });
+				document.getElementById('coord-success').classList.remove('hidden');
+				setTimeout(() => document.getElementById('coord-success').classList.add('hidden'), 2000);
+			} catch (err) { alert('Erreur : ' + (err?.message || '')); }
+		});
+
+		let selectedNote = 0;
+		zone.querySelectorAll('.star-btn').forEach(btn => {
+			btn.addEventListener('click', () => {
+				selectedNote = parseInt(btn.dataset.note);
+				zone.querySelectorAll('.star-btn').forEach((b, i) => {
+					b.classList.toggle('text-rire-orange', i < selectedNote);
+					b.classList.toggle('text-gray-300', i >= selectedNote);
+				});
+				document.getElementById('btn-avis').disabled = false;
+			});
+		});
+
+		document.getElementById('btn-avis')?.addEventListener('click', async () => {
+			if (selectedNote === 0) return;
+			const cibleId = user.type === 'famille' ? mission.etudiantChoisi : mission.famille;
+			const typeAvis = user.type === 'famille' ? 'famille_vers_etudiant' : 'etudiant_vers_famille';
+			try {
+				await newAvis({ mission: missionId, auteur: user.id, cible: cibleId, note: selectedNote, commentaire: document.getElementById('avis-commentaire').value, type: typeAvis });
+				window.location.reload();
+			} catch (err) { alert('Erreur : ' + (err?.message || '')); }
+		});
+
+		document.getElementById('btn-signaler')?.addEventListener('click', async () => {
+			const desc = prompt('Décris le motif du signalement :');
+			if (!desc) return;
+			try {
+				await newSignalement({ auteur: user.id, concerne: cibleSignal, mission: missionId, motif: 'comportement', description: desc, statut: 'nouveau' });
+				alert('Signalement envoyé. Merci.');
+			} catch (err) { alert('Erreur : ' + (err?.message || '')); }
+		});
+		return;
+	}
+
+	// CAS D : FAMILLE PROPRIÉTAIRE
+	if (user.type === 'famille' && mission.famille === user.id) {
+		const candidatures = await candidaturesByMission(missionId);
+		const accepted = candidatures.find(c => c.statut === 'acceptee');
+
+		let html = `<div class="flex gap-2 mb-6">
+			${mission.statut === 'ouverte' ? `
+				<a href="/app/compte/famille/nouvelle-mission?id=${missionId}" class="px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-rire-ink hover:bg-gray-50">Modifier</a>
+				<button id="btn-cancel" class="px-4 py-2 border border-red-200 rounded-lg text-sm font-medium text-red-700 hover:bg-red-50">Annuler la mission</button>` : ''}
+		</div>`;
+
+		if (accepted && (mission.statut === 'attribuee' || mission.statut === 'en_cours')) {
+			const etu = accepted.expand?.etudiant;
+			html += `
+				<div class="bg-rire-bg border border-rire-blue rounded-lg p-5 mb-6">
+					<div class="text-xs font-semibold tracking-widest text-rire-blue uppercase mb-2">${mission.statut === 'attribuee' ? 'Étudiant retenu' : 'Mission en cours avec'}</div>
+					<a href="/app/utilisateur?id=${etu?.id}" class="font-display text-xl font-bold text-rire-ink hover:text-rire-blue">${etu?.prenom || ''} ${etu?.nom || ''}</a>
+					<p class="text-sm text-rire-muted mt-1">${etu?.ecole || ''} · ${etu?.niveauEtudes || ''} · ${etu?.ville || ''}</p>
+				</div>`;
+		}
+
+		html += `<h3 class="font-display font-semibold text-rire-ink mb-4">Candidatures reçues (${candidatures.length})</h3>`;
+		if (candidatures.length === 0) {
+			html += '<p class="text-rire-muted text-sm">Pas encore de candidat.</p>';
+		} else {
+			html += '<div class="space-y-3">';
+			candidatures.forEach(c => {
+				const e = c.expand?.etudiant;
+				html += `<div class="bg-white border border-gray-200 rounded-lg p-4">
+					<div class="flex items-start justify-between mb-2">
+						<div>
+							<a href="/app/utilisateur?id=${e?.id}" class="font-semibold text-rire-ink hover:text-rire-blue">${e?.prenom || ''} ${e?.nom || ''}</a>
+							<p class="text-xs text-rire-muted">${e?.ecole || ''} · ${e?.niveauEtudes || ''} · ${e?.ville || ''}</p>
+						</div>
+						${c.statut === 'acceptee' ? '<span class="text-xs px-2 py-1 bg-green-50 text-green-700 rounded-full">Acceptée</span>' : ''}
+						${c.statut === 'refusee' ? '<span class="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded-full">Refusée</span>' : ''}
+					</div>
+					<p class="text-sm text-rire-ink mb-3 italic">"${(c.message || '').replace(/<[^>]*>/g, '')}"</p>
+					${c.statut === 'en_attente' && mission.statut === 'ouverte' ? `<div class="flex gap-2">
+						<button data-action="accept" data-id="${c.id}" class="bg-rire-blue text-white px-4 py-2 rounded-lg text-sm font-medium">Accepter</button>
+						<button data-action="refuse" data-id="${c.id}" class="border border-gray-200 px-4 py-2 rounded-lg text-sm font-medium text-rire-ink">Refuser</button>
+					</div>` : ''}
+				</div>`;
+			});
+			html += '</div>';
+		}
+		zone.innerHTML = html;
+
+		document.getElementById('btn-cancel')?.addEventListener('click', async () => {
+			if (!confirm('Annuler définitivement cette mission ?')) return;
+			try {
+				await changeMissionStatut(missionId, 'annulee');
+				window.location.reload();
+			} catch (err) { alert('Erreur : ' + (err?.message || '')); }
+		});
+		zone.querySelectorAll('button[data-action]').forEach(btn => {
+			btn.addEventListener('click', async () => {
+				btn.disabled = true; btn.textContent = '...';
+				try {
+					if (btn.dataset.action === 'accept') await acceptCandidature(btn.dataset.id);
+					else await refuseCandidature(btn.dataset.id);
+					window.location.reload();
+				} catch (err) { alert('Erreur : ' + (err?.message || '')); }
+			});
+		});
+		return;
+	}
+
+	// CAS E : ÉTUDIANT CHOISI (check-in / check-out)
+	if (user.type === 'etudiant' && mission.etudiantChoisi === user.id) {
+		const visites = await visitesByMission(missionId);
+		const enCours = visites.find(v => v.statut === 'en_cours');
+		if (enCours) {
+			zone.innerHTML = `
+				<h3 class="font-display font-semibold text-rire-ink mb-2">Mission en cours</h3>
+				<p class="text-rire-muted text-sm mb-4">Arrivé à ${new Date(enCours.checkinAt).toLocaleString('fr-FR')}.</p>
+				<textarea id="checkout-notes" rows="3" placeholder="Compte-rendu (optionnel)" class="w-full px-4 py-3 border border-gray-200 rounded-lg mb-3"></textarea>
+				<button id="btn-checkout" class="bg-rire-orange text-rire-ink px-6 py-3 rounded-lg font-semibold">Terminer la mission</button>`;
+			document.getElementById('btn-checkout').addEventListener('click', async () => {
+				try {
+					await checkoutVisite(enCours.id, document.getElementById('checkout-notes').value);
+					window.location.reload();
+				} catch (err) { alert('Erreur : ' + (err?.message || '')); }
+			});
+		} else {
+			zone.innerHTML = `
+				<h3 class="font-display font-semibold text-rire-ink mb-2">Tu es accepté 🎉</h3>
+				<p class="text-rire-muted text-sm mb-4">Clique sur "Démarrer" quand tu arrives sur place.</p>
+				<button id="btn-checkin" class="bg-rire-orange text-rire-ink px-6 py-3 rounded-lg font-semibold">Démarrer la mission</button>`;
+			document.getElementById('btn-checkin').addEventListener('click', async () => {
+				try {
+					await checkinMission(missionId, user.id);
+					window.location.reload();
+				} catch (err) { alert('Erreur : ' + (err?.message || '')); }
+			});
+		}
+		return;
+	}
+
+	// CAS F : ÉTUDIANT PEUT POSTULER
+	if (user.type === 'etudiant' && mission.statut === 'ouverte') {
+		const mesCand = await candidaturesByEtudiant(user.id);
+		const dejaPostule = mesCand.find(c => c.mission === missionId);
+		if (dejaPostule) {
+			const labels = { en_attente: 'Ta candidature est en attente.', acceptee: 'Ta candidature a été acceptée 🎉', refusee: 'Ta candidature a été refusée.' };
+			zone.innerHTML = `<h3 class="font-display font-semibold text-rire-ink">${labels[dejaPostule.statut] || 'Tu as postulé'}</h3>`;
+			return;
+		}
+		zone.innerHTML = `
+			<h3 class="font-display font-semibold text-rire-ink mb-2">Postuler à cette mission</h3>
+			<p class="text-rire-muted text-sm mb-4">Présente-toi à la famille en quelques lignes.</p>
+			<textarea id="candidature-message" rows="4" required placeholder="Bonjour, je suis intéressé(e) par votre mission parce que..." class="w-full px-4 py-3 border border-gray-200 rounded-lg mb-3"></textarea>
+			<button id="btn-postuler" class="bg-rire-orange text-rire-ink px-6 py-3 rounded-lg font-semibold">Envoyer ma candidature</button>`;
+		document.getElementById('btn-postuler').addEventListener('click', async () => {
+			const message = document.getElementById('candidature-message').value;
+			if (!message.trim()) return alert('Merci d\'écrire un petit message');
+			try {
+				await newCandidature({ mission: missionId, etudiant: user.id, message, statut: 'en_attente' });
+				window.location.reload();
+			} catch (err) { alert('Erreur : ' + (err?.message || '')); }
+		});
+		return;
+	}
+
+	// CAS G : DÉFAUT
+	zone.innerHTML = `<p class="text-rire-muted text-center py-8">Cette mission a été attribuée à un autre étudiant.</p>`;
+}
+</script>
