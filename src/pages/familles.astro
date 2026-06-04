@@ -7,19 +7,24 @@ import Footer from '../components/Footer.astro';
 	<Nav logoSrc="/Logo%20RRose.svg" titleSrc="/TitreHeaderRose.svg" />
 
 	<section class="bg-rire-rose">
-		<div class="max-w-7xl mx-auto px-6 py-20 md:py-32">
-			<p class="font-semibold text-xs md:text-sm tracking-[0.2em] uppercase text-rire-ink/70 mb-8">Pour les familles</p>
-			<h1 class="font-display font-extrabold text-5xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tight text-rire-ink mb-8 max-w-4xl">
-				Un proche isolé.<br/>
-				Et vous, à distance.
-			</h1>
-			<p class="text-lg md:text-2xl text-rire-ink/80 max-w-2xl mb-12 leading-relaxed">
-				Rirē vous permet de garder le lien grâce à des étudiants de confiance, présents quand vous ne pouvez pas l'être.
-			</p>
-			<a href="/app/inscription?type=famille" class="group inline-flex items-center gap-2 bg-rire-ink text-white font-bold px-8 py-5 rounded-full text-lg hover:bg-rire-blue transition-colors">
-				Créer un compte famille
-				<span class="group-hover:translate-x-1 transition-transform">→</span>
-			</a>
+		<div class="max-w-7xl mx-auto px-6 py-20 md:py-32 grid md:grid-cols-2 gap-12 items-end">
+			<div>
+				<p class="font-semibold text-xs md:text-sm tracking-[0.2em] uppercase text-rire-ink/70 mb-8">Pour les familles</p>
+				<h1 class="font-display font-extrabold text-5xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tight text-rire-ink mb-8">
+					Un proche isolé.<br/>
+					Et vous, à distance.
+				</h1>
+				<p class="text-lg md:text-2xl text-rire-ink/80 max-w-2xl mb-12 leading-relaxed">
+					Rirē vous permet de garder le lien grâce à des étudiants de confiance, présents quand vous ne pouvez pas l'être.
+				</p>
+				<a href="/app/inscription?type=famille" class="group inline-flex items-center gap-2 bg-rire-ink text-white font-bold px-8 py-5 rounded-full text-lg hover:bg-rire-blue transition-colors">
+					Créer un compte famille
+					<span class="group-hover:translate-x-1 transition-transform">→</span>
+				</a>
+			</div>
+			<div class="flex justify-center md:justify-end">
+				<img src="/RykoTel.svg" alt="Illustration famille Rirē" class="w-full max-w-md md:max-w-none" />
+			</div>
 		</div>
 	</section>
 
