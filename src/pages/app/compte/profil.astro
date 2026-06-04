@@ -38,6 +38,8 @@ import Footer from '../../../components/Footer.astro';
 			{ id: 'telephone', label: 'Téléphone', type: 'tel', value: user.telephone || '' },
 			{ id: 'ville', label: 'Ville', type: 'text', value: user.ville, required: true },
 			{ id: 'bio', label: 'Bio (optionnel)', type: 'textarea', value: user.bio || '' },
+			{ id: 'avatar', label: 'Avatar (optionnel)', type: 'file', accept: 'image/*' },
+			{ id: 'cv', label: 'CV (optionnel)', type: 'file', accept: '.pdf,.doc,.docx' },
 		];
 		if (user.type === 'etudiant') {
 			fields.push({ id: 'ecole', label: 'École / Université', type: 'text', value: user.ecole || '' });
@@ -48,6 +50,8 @@ import Footer from '../../../components/Footer.astro';
 				<label class="block text-sm font-medium text-rire-ink mb-1">${f.label}</label>
 				${f.type === 'textarea'
 					? `<textarea id="${f.id}" rows="3" class="w-full px-4 py-3 border border-gray-200 rounded-lg">${f.value}</textarea>`
+					: f.type === 'file'
+					? `<input type="file" id="${f.id}" accept="${f.accept}" class="w-full px-4 py-3 border border-gray-200 rounded-lg" />`
 					: `<input type="${f.type}" id="${f.id}" value="${f.value}" ${f.required ? 'required' : ''} class="w-full px-4 py-3 border border-gray-200 rounded-lg" />`}
 			</div>`).join('');
 		document.getElementById('loading').classList.add('hidden');
@@ -55,12 +59,25 @@ import Footer from '../../../components/Footer.astro';
 
 		document.getElementById('form-profil').addEventListener('submit', async (e) => {
 			e.preventDefault();
-			const data = {};
-			fields.forEach(f => { data[f.id] = document.getElementById(f.id).value; });
+			const formData = new FormData();
+			
+			// Ajouter les champs texte
+			fields.forEach(f => {
+				if (f.type === 'file') {
+					const input = document.getElementById(f.id);
+					if (input.files && input.files[0]) {
+						formData.append(f.id, input.files[0]);
+					}
+				} else if (f.type !== 'file') {
+					formData.append(f.id, document.getElementById(f.id).value);
+				}
+			});
+			
 			try {
-				await updateUser(user.id, data);
+				await updateUser(user.id, formData);
 				document.getElementById('succes').classList.remove('hidden');
 				document.getElementById('erreur').classList.add('hidden');
+				setTimeout(() => { document.getElementById('succes').classList.add('hidden'); }, 3000);
 			} catch (err) {
 				document.getElementById('erreur').textContent = 'Erreur : ' + (err?.message || '');
 				document.getElementById('erreur').classList.remove('hidden');

@@ -89,12 +89,17 @@ export async function missionsByVille(ville) {
 }
 
 export async function missionsByFamille(familleId) {
-	const records = await pb.collection('mission').getFullList({
-		filter: `famille = "${familleId}"`,
-		sort: '-created',
-		expand: 'etudiantChoisi',
-	});
-	return records;
+	try {
+		const records = await pb.collection('mission').getFullList({
+			filter: `famille = "${familleId}"`,
+			sort: '-created',
+			expand: 'etudiantChoisi',
+		});
+		return records;
+	} catch (error) {
+		console.error('Error in missionsByFamille:', error);
+		throw error;
+	}
 }
 
 export async function missionsByEtudiant(etudiantId) {
@@ -131,7 +136,7 @@ export async function deleteMission(id) {
 
 export async function candidaturesByMission(missionId) {
 	const records = await pb.collection('candidature').getFullList({
-		filter: `mission = "${missionId}"`,
+		filter: `mission = '${missionId}'`,
 		sort: '-created',
 		expand: 'etudiant',
 	});
@@ -140,7 +145,7 @@ export async function candidaturesByMission(missionId) {
 
 export async function candidaturesByEtudiant(etudiantId) {
 	const records = await pb.collection('candidature').getFullList({
-		filter: `etudiant = "${etudiantId}"`,
+		filter: `etudiant = '${etudiantId}'`,
 		sort: '-created',
 		expand: 'mission',
 	});

@@ -37,55 +37,103 @@ import Footer from '../../../components/Footer.astro';
 <script>
   import { isAuthValid, currentUser, logout, missionsByFamille } from '../../../lib/backend.mjs';
 
-  if (!isAuthValid()) {
-    window.location.href = '/app/connexion';
-  } else {
-    const user = currentUser();
-    if (!user || user.type !== 'famille') {
-      window.location.href = '/app/compte/etudiant';
-    } else {
+  (async () => {
+    try {
+      if (!isAuthValid()) {
+        window.location.href = '/app/connexion';
+        return;
+      }
+
+      const user = currentUser();
+      console.log('✓ Current user:', user?.prenom, user?.nom, 'ID:', user?.id);
+      
+      if (!user || user.type !== 'famille') {
+        console.log('User is not famille, redirecting to etudiant');
+        window.location.href = '/app/compte/etudiant';
+        return;
+      }
+
+      // Afficher le prénom
       const userPrenomEl = document.getElementById('user-prenom');
       if (userPrenomEl) userPrenomEl.textContent = user.prenom;
 
+      // Récupérer les missions
+      console.log('📡 Fetching missions for famille ID:', user.id);
+      let missions = [];
       try {
-        const missions = await missionsByFamille(user.id);
-        const listEl = document.getElementById('missions-list');
+        missions = await missionsByFamille(user.id);
+        console.log('✓ Missions fetched:', missions);
+      } catch (err) {
+        console.error('❌ Error fetching missions:', err);
+        throw err;
+      }
 
-        if (listEl) {
-          if (missions.length === 0) {
-            listEl.innerHTML = `
-            <div class="bg-rire-bg rounded-lg p-8 text-center">
-              <p class="text-rire-muted">Tu n'as pas encore publié de mission.</p>
+      const listEl = document.getElementById('missions-list');
+      if (!listEl) {
+        console.error('❌ Element missions-list not found');
+        return;
+      }
+
+      if (!missions || missions.length === 0) {
+        console.log('No missions found');
+        listEl.innerHTML = `
+          <div class="text-center">
+            <div class="max-w-xs mx-auto mb-4">
+              <img src="/RykoB.svg" alt="No missions" class="w-48 h-48 mx-auto" />
+            </div>
+            <p class="text-rire-muted text-lg font-medium">Oh...Rien de nouveau</p>
+          </div>`;
+      } else {
+        console.log('✓ Found', missions.length, 'missions');
+        
+        const colors = {
+          ouverte: 'bg-blue-50 text-rire-blue',
+          attribuee: 'bg-pink-50 text-pink-700',
+          en_cours: 'bg-orange-50 text-orange-700',
+          terminee: 'bg-green-50 text-green-700',
+          annulee: 'bg-gray-100 text-gray-600'
+        };
+
+        const htmlArray = missions.map(m => {
+          const statusColor = colors[m.statut] || 'bg-gray-100';
+          return `
+            <div class="bg-white border border-gray-200 rounded-lg p-6">
+              <a href="/app/mission?id=${m.id}" class="block hover:opacity-70 transition mb-4">
+                <div class="flex items-start justify-between mb-2">
+                  <h3 class="font-display font-semibold text-rire-ink text-lg">${m.titre}</h3>
+                  <span class="text-xs px-3 py-1 rounded-full ${statusColor} whitespace-nowrap ml-4">
+                    ${m.statut?.replace(/_/g, ' ') || 'unknown'}
+                  </span>
+                </div>
+                <p class="text-sm text-rire-muted">
+                  📍 ${m.lieuVille} · ⏱️ ${m.dureeEstimee}h · 💶 ${m.tarifHoraire}€/h
+                </p>
+              </a>
             </div>`;
-          } else {
-            const colors: Record<string, string> = {
-              ouverte: 'bg-blue-50 text-rire-blue',
-              attribuee: 'bg-pink-50 text-pink-700',
-              en_cours: 'bg-orange-50 text-orange-700',
-              terminee: 'bg-green-50 text-green-700',
-              annulee: 'bg-gray-100 text-gray-600'
-            };
-            listEl.innerHTML = missions.map(m => `
-            <a href="/app/mission?id=${m.id}" class="block bg-white border border-gray-200 rounded-lg p-6 hover:border-rire-blue transition">
-              <div class="flex items-start justify-between mb-2">
-                <h3 class="font-display font-semibold text-rire-ink text-lg">${m.titre}</h3>
-                <span class="text-xs px-3 py-1 rounded-full ${colors[(m.statut as string)] || 'bg-gray-100'} whitespace-nowrap ml-4">
-                  ${String(m.statut).replace('_', ' ')}
-                </span>
-              </div>
-              <p class="text-sm text-rire-muted">
-                📍 ${m.lieuVille} · ⏱️ ${m.dureeEstimee}h · 💶 ${m.tarifHoraire}€/h
-              </p>
-            </a>
-          `).join('');
-          }
-        }
-      } catch (err) { console.error(err); }
+        }).join('');
+
+        listEl.innerHTML = htmlArray;
+        console.log('✓ Missions rendered');
+      }
 
       document.getElementById('loading')?.classList.add('hidden');
       document.getElementById('content')?.classList.remove('hidden');
+    } catch (err) {
+      console.error('❌ Fatal error:', err);
+      const listEl = document.getElementById('missions-list');
+      if (listEl) {
+        listEl.innerHTML = `
+          <div class="text-center">
+            <div class="max-w-xs mx-auto mb-4">
+              <img src="/RykoB.svg" alt="Error" class="w-48 h-48 mx-auto" />
+            </div>
+            <p class="text-rire-muted text-lg font-medium">Oh...Rien de nouveau</p>
+          </div>`;
+      }
+      document.getElementById('loading')?.classList.add('hidden');
+      document.getElementById('content')?.classList.remove('hidden');
     }
-  }
+  })();
 
   document.getElementById('btn-logout')?.addEventListener('click', () => {
     logout();

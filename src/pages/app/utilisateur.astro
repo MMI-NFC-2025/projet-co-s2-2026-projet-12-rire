@@ -35,8 +35,12 @@ import Footer from '../../components/Footer.astro';
 			const stats = await userStats(userId);
 			const isF = user.type === 'famille';
 			const couleur = isF ? 'rose' : 'orange';
+			const avatarUrl = user.avatar ? `https://rire.maheyralambo.fun/api/files/users/${user.id}/${user.avatar}` : null;
+			const avatarHtml = avatarUrl 
+				? `<img src="${avatarUrl}" alt="Avatar de ${user.prenom} ${user.nom}" class="w-20 h-20 rounded-xl object-cover" />`
+				: `<div class="w-20 h-20 rounded-xl bg-rire-${couleur} flex items-center justify-center text-2xl font-bold text-rire-ink">${(user.prenom?.[0] || '') + (user.nom?.[0] || '')}</div>`;
 			document.getElementById('header').innerHTML = `
-				<div class="w-20 h-20 rounded-xl bg-rire-${couleur} flex items-center justify-center text-2xl font-bold text-rire-ink">${(user.prenom?.[0] || '') + (user.nom?.[0] || '')}</div>
+				${avatarHtml}
 				<div class="flex-1">
 					<div class="text-xs font-semibold tracking-widest text-rire-${couleur} uppercase mb-1">${isF ? 'Famille' : 'Étudiant'}</div>
 					<h1 class="font-display text-3xl font-bold text-rire-ink">${user.prenom} ${user.nom}</h1>
