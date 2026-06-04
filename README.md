@@ -3,9 +3,9 @@
 Éléménts à renseigner pour la soutenance :
 
 - [ ] Nom du projet : Rirē - Plateforme d'entraide intergénérationnelle
-- [ ] URL de la landing page :
-- [ ] URL de l'application finale :
-- [ ] URL de connexion au back office :
+- [ ] URL de la landing page : https://rire.maheyralambo.fun/
+- [ ] URL de l'application finale : https://rire.maheyralambo.fun/app/connexion/
+- [ ] URL de connexion au back office : https://rire.maheyralambo.fun/_/
 - [ ] Identifiant de connexion au backoffice : mahey.ralambo@gmail.com
 - [ ] Mot de passe de connexion au backoffice : Johar$123456
 - [ ] URL de la maquette FIGMA : https://www.figma.com/design/0Ia1NfPhPTHxH4GEALxvD4/PROJETS2-Elaarbaoui-Ralambo?node-id=0-1&t=Uxoa1Pf2bTX1gZKg-1

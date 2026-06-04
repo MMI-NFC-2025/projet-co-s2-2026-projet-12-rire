@@ -7,45 +7,99 @@ import Footer from '../components/Footer.astro';
 <Layout title="Rirē — Le lien avant tout">
 <Nav />
 
-<!-- HERO -->
-<section class="bg-rire-bg py-20 px-6">
-  <div class="max-w-5xl mx-auto text-center">
-    <div class="text-xs font-semibold tracking-widest text-rire-blue uppercase mb-4">Lien intergénérationnel</div>
-    <h1 class="font-display text-5xl md:text-7xl font-bold text-rire-ink leading-tight mb-6">
-      L'aide aux aînés.<br>
-      Vue par les <span class="text-rire-blue">étudiants</span>.
-    </h1>
-    <p class="text-xl text-rire-muted max-w-2xl mx-auto mb-10">
-      Rirē connecte les familles aidantes et les étudiants pour des missions d'entraide non médicales auprès des aînés isolés.
-    </p>
-    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-      <a href="/familles" class="bg-rire-rose text-rire-ink px-8 py-4 rounded-full font-semibold hover:opacity-90 transition">Je suis une famille</a>
-      <a href="/etudiants" class="bg-rire-orange text-rire-ink px-8 py-4 rounded-full font-semibold hover:opacity-90 transition">Je suis étudiant</a>
+<!-- Hero -->
+	<section class="max-w-7xl mx-auto px-6 py-20 md:py-32 grid md:grid-cols-2 gap-12 items-end">
+		<div>
+			<p class="font-semibold text-xs md:text-sm tracking-[0.2em] uppercase text-rire-blue mb-8">
+				Plateforme intergénérationnelle · Lyon · Paris · Bordeaux
+			</p>
+			<h1 class="font-display font-extrabold text-5xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tight text-rire-ink mb-8">
+				L'aide aux aînés.<br/>
+				Vue par les <span class="text-rire-blue">étudiants</span>.
+			</h1>
+			<p class="text-lg md:text-2xl text-rire-muted mb-12 leading-relaxed">
+				Rirē met en lien des étudiants disponibles et des aînés qui ont besoin d'aide pour le quotidien : courses, présence, accompagnement numérique, sorties.
+			</p>
+			<div class="flex flex-col sm:flex-row gap-4">
+				<a href="/familles" class="group inline-flex items-center justify-center gap-2 bg-rire-rose text-rire-ink font-bold px-8 py-5 rounded-full text-lg hover:scale-[1.02] transition-transform">
+					Je cherche de l'aide pour un proche
+					<span class="group-hover:translate-x-1 transition-transform">→</span>
+				</a>
+				<a href="/etudiants" class="group inline-flex items-center justify-center gap-2 bg-rire-orange text-rire-ink font-bold px-8 py-5 rounded-full text-lg hover:scale-[1.02] transition-transform">
+					Je veux aider et être payé
+					<span class="group-hover:translate-x-1 transition-transform">→</span>
+				</a>
+			</div>
+		</div>
+		<div class="flex justify-center md:justify-end">
+			<img src="/RykoET.svg" alt="Un étudiant et un aîné côte à côte" class="w-full max-w-md md:max-w-none" />
+		</div>
+	</section>
+
+<!-- STATS -->
+<section class="bg-white border-y border-gray-200 overflow-hidden py-10">
+  <div class="marquee-track flex">
+    <!-- Groupe 1 -->
+    <div class="flex gap-16 items-center shrink-0 pr-16">
+      <div class="flex flex-col items-center">
+        <div class="font-display text-4xl font-bold text-rire-blue">750k</div>
+        <div class="text-sm text-rire-muted mt-1 text-center">seniors en mort sociale</div>
+      </div>
+      <span class="text-rire-blue text-2xl select-none">·</span>
+      <div class="flex flex-col items-center">
+        <div class="font-display text-4xl font-bold text-rire-blue">3M</div>
+        <div class="text-sm text-rire-muted mt-1 text-center">étudiants en France</div>
+      </div>
+      <span class="text-rire-blue text-2xl select-none">·</span>
+      <div class="flex flex-col items-center">
+        <div class="font-display text-4xl font-bold text-rire-blue">15€</div>
+        <div class="text-sm text-rire-muted mt-1 text-center">tarif horaire moyen</div>
+      </div>
+      <span class="text-rire-blue text-2xl select-none">·</span>
+      <div class="flex flex-col items-center">
+        <div class="font-display text-4xl font-bold text-rire-blue">100%</div>
+        <div class="text-sm text-rire-muted mt-1 text-center">identités vérifiées</div>
+      </div>
+      <span class="text-rire-blue text-2xl select-none">·</span>
+    </div>
+    <!-- Groupe 2 — copie exacte pour la loop seamless -->
+    <div class="flex gap-16 items-center shrink-0 pr-16" aria-hidden="true">
+      <div class="flex flex-col items-center">
+        <div class="font-display text-4xl font-bold text-rire-blue">750k</div>
+        <div class="text-sm text-rire-muted mt-1 text-center">seniors en mort sociale</div>
+      </div>
+      <span class="text-rire-blue text-2xl select-none">·</span>
+      <div class="flex flex-col items-center">
+        <div class="font-display text-4xl font-bold text-rire-blue">3M</div>
+        <div class="text-sm text-rire-muted mt-1 text-center">étudiants en France</div>
+      </div>
+      <span class="text-rire-blue text-2xl select-none">·</span>
+      <div class="flex flex-col items-center">
+        <div class="font-display text-4xl font-bold text-rire-blue">15€</div>
+        <div class="text-sm text-rire-muted mt-1 text-center">tarif horaire moyen</div>
+      </div>
+      <span class="text-rire-blue text-2xl select-none">·</span>
+      <div class="flex flex-col items-center">
+        <div class="font-display text-4xl font-bold text-rire-blue">100%</div>
+        <div class="text-sm text-rire-muted mt-1 text-center">identités vérifiées</div>
+      </div>
+      <span class="text-rire-blue text-2xl select-none">·</span>
     </div>
   </div>
 </section>
 
-<!-- STATS -->
-<section class="bg-white py-12 px-6 border-y border-gray-200">
-  <div class="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-    <div>
-      <div class="font-display text-4xl font-bold text-rire-blue">750k</div>
-      <div class="text-sm text-rire-muted mt-1">seniors en mort sociale</div>
-    </div>
-    <div>
-      <div class="font-display text-4xl font-bold text-rire-blue">3M</div>
-      <div class="text-sm text-rire-muted mt-1">étudiants en France</div>
-    </div>
-    <div>
-      <div class="font-display text-4xl font-bold text-rire-blue">15€</div>
-      <div class="text-sm text-rire-muted mt-1">tarif horaire moyen</div>
-    </div>
-    <div>
-      <div class="font-display text-4xl font-bold text-rire-blue">100%</div>
-      <div class="text-sm text-rire-muted mt-1">identités vérifiées</div>
-    </div>
-  </div>
-</section>
+<style>
+  .marquee-track {
+    animation: marquee 20s linear infinite;
+  }
+  .marquee-track:hover {
+    animation-play-state: paused;
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+</style>
 
 <!-- Comment ça marche -->
 	<section class="max-w-7xl mx-auto px-6 py-24 md:py-32">
@@ -128,13 +182,15 @@ import Footer from '../components/Footer.astro';
 
 <!-- FAQ -->
 	<section class="max-w-7xl mx-auto px-6 py-24 md:py-32">
+		<div class="grid md:grid-cols-[1fr_auto] gap-12 items-start">
+		<div>
 		<div class="mb-16">
 			<p class="font-semibold text-xs md:text-sm tracking-[0.2em] uppercase text-rire-blue mb-4">FAQ</p>
 			<h2 class="font-display font-extrabold text-4xl md:text-6xl leading-[0.95] tracking-tight text-rire-ink max-w-3xl">
 				Les questions<br/>qu'on nous pose.
 			</h2>
 		</div>
-		<div class="max-w-3xl space-y-2">
+		<div class="space-y-2">
 			<details class="group border-b border-gray-200">
 				<summary class="flex items-center justify-between cursor-pointer py-5 list-none">
 					<span class="font-display font-bold text-lg md:text-xl text-rire-ink pr-6">Combien ça coûte ?</span>
@@ -177,6 +233,11 @@ import Footer from '../components/Footer.astro';
 				</summary>
 				<p class="text-rire-muted leading-relaxed pb-5">À l'inscription, chaque étudiant suit un mini-module de sensibilisation à l'accompagnement des personnes âgées. Rirē n'est pas un service médical, mais nos étudiants savent réagir et alerter en cas de besoin.</p>
 			</details>
+		</div>
+		</div>
+		<div class="hidden md:flex items-start justify-end pt-48 -mr-48">
+			<img src="/RykoQ.svg" alt="Mascotte Rirē" class="w-72 xl:w-96" />
+		</div>
 		</div>
 	</section>
 
