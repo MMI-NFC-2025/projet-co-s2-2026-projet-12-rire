@@ -1,11 +1,193 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Rirē — Le lien avant tout">
+<Nav />
+
+<!-- HERO -->
+<section class="bg-rire-bg py-20 px-6">
+  <div class="max-w-5xl mx-auto text-center">
+    <div class="text-xs font-semibold tracking-widest text-rire-blue uppercase mb-4">Lien intergénérationnel</div>
+    <h1 class="font-display text-5xl md:text-7xl font-bold text-rire-ink leading-tight mb-6">
+      L'aide aux aînés.<br>
+      Vue par les <span class="text-rire-blue">étudiants</span>.
+    </h1>
+    <p class="text-xl text-rire-muted max-w-2xl mx-auto mb-10">
+      Rirē connecte les familles aidantes et les étudiants pour des missions d'entraide non médicales auprès des aînés isolés.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="/familles" class="bg-rire-rose text-rire-ink px-8 py-4 rounded-full font-semibold hover:opacity-90 transition">Je suis une famille</a>
+      <a href="/etudiants" class="bg-rire-orange text-rire-ink px-8 py-4 rounded-full font-semibold hover:opacity-90 transition">Je suis étudiant</a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="bg-white py-12 px-6 border-y border-gray-200">
+  <div class="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+    <div>
+      <div class="font-display text-4xl font-bold text-rire-blue">750k</div>
+      <div class="text-sm text-rire-muted mt-1">seniors en mort sociale</div>
+    </div>
+    <div>
+      <div class="font-display text-4xl font-bold text-rire-blue">3M</div>
+      <div class="text-sm text-rire-muted mt-1">étudiants en France</div>
+    </div>
+    <div>
+      <div class="font-display text-4xl font-bold text-rire-blue">15€</div>
+      <div class="text-sm text-rire-muted mt-1">tarif horaire moyen</div>
+    </div>
+    <div>
+      <div class="font-display text-4xl font-bold text-rire-blue">100%</div>
+      <div class="text-sm text-rire-muted mt-1">identités vérifiées</div>
+    </div>
+  </div>
+</section>
+
+<!-- Comment ça marche -->
+	<section class="max-w-7xl mx-auto px-6 py-24 md:py-32">
+		<div class="mb-16">
+			<p class="font-semibold text-xs md:text-sm tracking-[0.2em] uppercase text-rire-blue mb-4">Comment ça marche</p>
+			<h2 class="font-display font-extrabold text-4xl md:text-6xl leading-[0.95] tracking-tight text-rire-ink max-w-3xl">
+				Trois étapes,<br/>zéro friction.
+			</h2>
+		</div>
+		<div class="grid md:grid-cols-3 gap-8 md:gap-12">
+			<div class="border-t-2 border-rire-ink pt-8">
+				<div class="font-display font-extrabold text-7xl md:text-8xl text-rire-ink leading-none mb-6">01</div>
+				<h3 class="font-display font-bold text-2xl text-rire-ink mb-3">Publiez une mission</h3>
+				<p class="text-rire-muted leading-relaxed">
+					Vous décrivez en 2 minutes ce dont vous avez besoin : aide aux courses, présence, sortie au parc, accompagnement numérique. Vous choisissez le jour, l'horaire, le tarif.
+				</p>
+			</div>
+			<div class="border-t-2 border-rire-ink pt-8">
+				<div class="font-display font-extrabold text-7xl md:text-8xl text-rire-ink leading-none mb-6">02</div>
+				<h3 class="font-display font-bold text-2xl text-rire-ink mb-3">Choisissez un étudiant</h3>
+				<p class="text-rire-muted leading-relaxed">
+					Les étudiants intéressés candidatent à votre mission. Vous consultez leur profil, leur motivation, leurs disponibilités. Vous validez en un clic celui qui vous convient.
+				</p>
+			</div>
+			<div class="border-t-2 border-rire-ink pt-8">
+				<div class="font-display font-extrabold text-7xl md:text-8xl text-rire-ink leading-none mb-6">03</div>
+				<h3 class="font-display font-bold text-2xl text-rire-ink mb-3">Le lien se crée</h3>
+				<p class="text-rire-muted leading-relaxed">
+					L'étudiant arrive, fait sa mission, et reçoit son paiement automatiquement à la fin. Vous laissez un avis, et la relation peut se prolonger.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- Pour qui (DA adaptative) -->
+	<section class="max-w-7xl mx-auto px-6 py-24 md:py-32">
+		<div class="mb-16">
+			<p class="font-semibold text-xs md:text-sm tracking-[0.2em] uppercase text-rire-blue mb-4">Pour qui</p>
+			<h2 class="font-display font-extrabold text-4xl md:text-6xl leading-[0.95] tracking-tight text-rire-ink max-w-3xl">
+				Deux publics,<br/>une même envie de lien.
+			</h2>
+		</div>
+		<div class="grid md:grid-cols-2 gap-6 md:gap-8">
+			<div class="bg-rire-rose rounded-3xl p-10 md:p-12 flex flex-col">
+				<p class="font-semibold text-xs tracking-[0.2em] uppercase text-rire-ink/70 mb-6">Pour les familles</p>
+				<h3 class="font-display font-extrabold text-4xl md:text-5xl text-rire-ink leading-[0.95] mb-6">
+					Un proche isolé.<br/>Une solution simple.
+				</h3>
+				<ul class="space-y-3 text-rire-ink mb-10">
+					<li class="flex items-start gap-3"><span class="mt-1">✓</span> Étudiants vérifiés et de confiance</li>
+					<li class="flex items-start gap-3"><span class="mt-1">✓</span> Tarifs transparents, paiement sécurisé</li>
+					<li class="flex items-start gap-3"><span class="mt-1">✓</span> Suivi en temps réel des missions</li>
+					<li class="flex items-start gap-3"><span class="mt-1">✓</span> Engagement à la mission, pas d'abonnement</li>
+				</ul>
+				<a href="/familles" class="mt-auto inline-flex items-center gap-2 bg-rire-ink text-white font-bold px-6 py-4 rounded-full text-base w-fit hover:bg-rire-blue transition-colors">
+					Découvrir l'espace familles
+					<span>→</span>
+				</a>
+			</div>
+			<div class="bg-rire-orange rounded-3xl p-10 md:p-12 flex flex-col">
+				<p class="font-semibold text-xs tracking-[0.2em] uppercase text-rire-ink/70 mb-6">Pour les étudiants</p>
+				<h3 class="font-display font-extrabold text-4xl md:text-5xl text-rire-ink leading-[0.95] mb-6">
+					Un job utile.<br/>Payé. Près de chez toi.
+				</h3>
+				<ul class="space-y-3 text-rire-ink mb-10">
+					<li class="flex items-start gap-3"><span class="mt-1">✓</span> Missions courtes, sans engagement</li>
+					<li class="flex items-start gap-3"><span class="mt-1">✓</span> Paiement automatique à la fin</li>
+					<li class="flex items-start gap-3"><span class="mt-1">✓</span> Expérience humaine valorisable sur CV</li>
+					<li class="flex items-start gap-3"><span class="mt-1">✓</span> Tu choisis tes horaires, près de ta fac</li>
+				</ul>
+				<a href="/etudiants" class="mt-auto inline-flex items-center gap-2 bg-rire-ink text-white font-bold px-6 py-4 rounded-full text-base w-fit hover:bg-rire-blue transition-colors">
+					Découvrir l'espace étudiants
+					<span>→</span>
+				</a>
+			</div>
+		</div>
+	</section>
+
+   
+
+<!-- FAQ -->
+	<section class="max-w-7xl mx-auto px-6 py-24 md:py-32">
+		<div class="mb-16">
+			<p class="font-semibold text-xs md:text-sm tracking-[0.2em] uppercase text-rire-blue mb-4">FAQ</p>
+			<h2 class="font-display font-extrabold text-4xl md:text-6xl leading-[0.95] tracking-tight text-rire-ink max-w-3xl">
+				Les questions<br/>qu'on nous pose.
+			</h2>
+		</div>
+		<div class="max-w-3xl space-y-2">
+			<details class="group border-b border-gray-200">
+				<summary class="flex items-center justify-between cursor-pointer py-5 list-none">
+					<span class="font-display font-bold text-lg md:text-xl text-rire-ink pr-6">Combien ça coûte ?</span>
+					<span class="text-2xl text-rire-blue group-open:rotate-45 transition-transform shrink-0">+</span>
+				</summary>
+				<p class="text-rire-muted leading-relaxed pb-5">L'inscription est gratuite pour tout le monde. Vous ne payez que les missions que vous publiez — c'est vous qui fixez le tarif (à partir de 15 €/h en moyenne). Rirē prélève une commission de 10 % sur chaque mission, qui finance la plateforme, l'assurance et la vérification des profils.</p>
+			</details>
+			<details class="group border-b border-gray-200">
+				<summary class="flex items-center justify-between cursor-pointer py-5 list-none">
+					<span class="font-display font-bold text-lg md:text-xl text-rire-ink pr-6">Les étudiants sont-ils vraiment vérifiés ?</span>
+					<span class="text-2xl text-rire-blue group-open:rotate-45 transition-transform shrink-0">+</span>
+				</summary>
+				<p class="text-rire-muted leading-relaxed pb-5">Oui, et c'est non-négociable. Chaque étudiant fournit une pièce d'identité et un certificat de scolarité à jour. Notre équipe valide manuellement chaque profil avant qu'il puisse candidater à une mission.</p>
+			</details>
+			<details class="group border-b border-gray-200">
+				<summary class="flex items-center justify-between cursor-pointer py-5 list-none">
+					<span class="font-display font-bold text-lg md:text-xl text-rire-ink pr-6">Que se passe-t-il si l'étudiant ne vient pas ?</span>
+					<span class="text-2xl text-rire-blue group-open:rotate-45 transition-transform shrink-0">+</span>
+				</summary>
+				<p class="text-rire-muted leading-relaxed pb-5">Vous êtes remboursé intégralement, et l'étudiant est sanctionné sur la plateforme. En cas d'urgence, notre support trouve un remplaçant disponible dans les meilleurs délais.</p>
+			</details>
+			<details class="group border-b border-gray-200">
+				<summary class="flex items-center justify-between cursor-pointer py-5 list-none">
+					<span class="font-display font-bold text-lg md:text-xl text-rire-ink pr-6">Comment je suis informé de l'avancement ?</span>
+					<span class="text-2xl text-rire-blue group-open:rotate-45 transition-transform shrink-0">+</span>
+				</summary>
+				<p class="text-rire-muted leading-relaxed pb-5">L'étudiant fait un check-in à son arrivée et un check-out à son départ. Vous recevez une notification à chaque étape, et vous pouvez suivre le déroulement de la mission depuis votre tableau de bord.</p>
+			</details>
+			<details class="group border-b border-gray-200">
+				<summary class="flex items-center justify-between cursor-pointer py-5 list-none">
+					<span class="font-display font-bold text-lg md:text-xl text-rire-ink pr-6">Puis-je annuler une mission ?</span>
+					<span class="text-2xl text-rire-blue group-open:rotate-45 transition-transform shrink-0">+</span>
+				</summary>
+				<p class="text-rire-muted leading-relaxed pb-5">Oui, sans frais jusqu'à 24 heures avant le début de la mission. Au-delà, 50 % du montant est conservé pour dédommager l'étudiant qui s'est rendu disponible.</p>
+			</details>
+			<details class="group border-b border-gray-200">
+				<summary class="flex items-center justify-between cursor-pointer py-5 list-none">
+					<span class="font-display font-bold text-lg md:text-xl text-rire-ink pr-6">Les étudiants sont-ils formés ?</span>
+					<span class="text-2xl text-rire-blue group-open:rotate-45 transition-transform shrink-0">+</span>
+				</summary>
+				<p class="text-rire-muted leading-relaxed pb-5">À l'inscription, chaque étudiant suit un mini-module de sensibilisation à l'accompagnement des personnes âgées. Rirē n'est pas un service médical, mais nos étudiants savent réagir et alerter en cas de besoin.</p>
+			</details>
+		</div>
+	</section>
+
+<!-- CTA FINAL -->
+<section class="bg-rire-blue py-20 px-6">
+  <div class="max-w-3xl mx-auto text-center">
+    <h2 class="font-display text-4xl font-bold text-white mb-4">Rejoins Rirē aujourd'hui</h2>
+    <p class="text-blue-100 text-lg mb-8">Quelques minutes pour créer ton compte, et le lien commence.</p>
+    <a href="/app/inscription" class="inline-block bg-white text-rire-blue px-8 py-4 rounded-full font-semibold hover:opacity-90 transition">Créer mon compte</a>
+  </div>
+</section>
+
+<Footer />
 </Layout>

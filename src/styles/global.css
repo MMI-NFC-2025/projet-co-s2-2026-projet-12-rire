@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+  --color-rire-blue: #0406F4;
+  --color-rire-orange: #FFB300;
+  --color-rire-rose: #F5A4B3;
+  --color-rire-ink: #0E1430;
+  --color-rire-muted: #6B7280;
+  --color-rire-bg: #F5F6FA;
+  --color-rire-highlight: #E6E6FE;
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
